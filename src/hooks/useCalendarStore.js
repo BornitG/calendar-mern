@@ -17,10 +17,11 @@ export const useCalendarStore = () => {
     }
 
     const startSavingEvent = async ( calendarEvent ) => {
-        // Todo Update event
-        if ( calendarEvent._id ){
+        if ( calendarEvent.id ){
             // Updating
-            dispatch( onUpdateEvent({ ...calendarEvent }) );
+            await calendarApi.put(`/event/${ calendarEvent.id }`, calendarEvent );
+            dispatch( onUpdateEvent({ ...calendarEvent, user }) );
+
         } else {
             // Creating
             const { data } = await calendarApi.post('/event', calendarEvent);
