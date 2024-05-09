@@ -22,13 +22,13 @@ export const useCalendarStore = () => {
         try {
             if ( calendarEvent.id ){
                 // Updating
-                await calendarApi.put(`/event/${ calendarEvent.id }`, calendarEvent );
+                await calendarApi.put(`/events/${ calendarEvent.id }`, calendarEvent );
                 dispatch( onUpdateEvent({ ...calendarEvent, user }) );
                 return;
             }
     
             // Creating
-            const { data } = await calendarApi.post('/event', calendarEvent);
+            const { data } = await calendarApi.post('/events', calendarEvent);
             dispatch( onAddNewEvent({ ...calendarEvent, id: data.event.id, user }) );
 
         } catch (error) {
@@ -41,7 +41,7 @@ export const useCalendarStore = () => {
     const startDeletingEvent = async() => {
         
         try {
-            await calendarApi.delete(`/event/${ activeEvent.id }`);
+            await calendarApi.delete(`/events/${ activeEvent.id }`);
             dispatch( onDeleteEvent() );
         } catch (error) {
             console.log( error );
@@ -51,7 +51,7 @@ export const useCalendarStore = () => {
 
     const startLoadingEvents = async() => {
         try {
-            const { data } = await calendarApi.get('/event');
+            const { data } = await calendarApi.get('/events');
             const events = convertEventsToDateEvents( data.events );
             dispatch( onLoadEvents( events ) );
 
