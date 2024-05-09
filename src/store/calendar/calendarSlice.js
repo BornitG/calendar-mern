@@ -19,7 +19,8 @@ const tempEvent =
 export const calendarSlice = createSlice({
    name: 'calendar',
    initialState: {
-       events: [ tempEvent ],
+      isLoadingEvents: true, 
+      events: [ tempEvent ],
       activeEvent: null,
    },
    reducers: {
@@ -44,6 +45,17 @@ export const calendarSlice = createSlice({
           state.events = state.events.filter( event => event._id !== state.activeEvent._id );
           state.activeEvent = null;
         }
+      },
+      onLoadEvents: ( state, { payload = [] } ) => {
+        state.isLoadingEvents = false;
+        // state.events = payload;
+        payload.forEach( event  => {
+          const exists = state.events.some( dbEvent => dbEvent.id === event.id );
+          console.log( exists );
+          if ( !exists ) {
+            state.events.push( event );
+          }
+        });
       }
    }
 });
@@ -54,5 +66,6 @@ export const {
   onSetActiveEvent,
   onAddNewEvent,
   onUpdateEvent,
-  onDeleteEvent
+  onDeleteEvent,
+  onLoadEvents
 } = calendarSlice.actions;
