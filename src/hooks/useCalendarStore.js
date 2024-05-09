@@ -35,11 +35,18 @@ export const useCalendarStore = () => {
             console.log( error );
             Swal.fire('Error while saving', error.response.data.msg, 'error');
         }
-
+        
     }
-
-    const startDeletingEvent = () => {
-        dispatch( onDeleteEvent() );
+    
+    const startDeletingEvent = async() => {
+        
+        try {
+            await calendarApi.delete(`/event/${ activeEvent.id }`);
+            dispatch( onDeleteEvent() );
+        } catch (error) {
+            console.log( error );
+            Swal.fire('Error while deleting', error.response.data.msg, 'error');
+        }
     }
 
     const startLoadingEvents = async() => {

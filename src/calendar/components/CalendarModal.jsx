@@ -10,7 +10,7 @@ import DatePicker, { registerLocale } from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { es } from 'date-fns/locale/es';
 
-import { useCalendarStore, useUiStore } from '../../hooks';
+import { useAuthStore, useCalendarStore, useUiStore } from '../../hooks';
 
 registerLocale('es', es)
 
@@ -30,10 +30,12 @@ const customStyles = {
 
 export const CalendarModal = () => {
 
+    const { user } = useAuthStore();
     const { isDateModalOpen, closeDateModal } = useUiStore();
     const { activeEvent, startSavingEvent } = useCalendarStore();
 
     const [formSubmitted, setFormSubmitted] = useState(false);
+    const [isMyEvent, setIsMyEvent] = useState(true);
 
     const [formValues, setFormValues] = useState({
         title: '',
@@ -52,9 +54,10 @@ export const CalendarModal = () => {
 
     useEffect(() => {
         if ( activeEvent !== null){
-            setFormValues({...activeEvent})
+            setFormValues({...activeEvent});
+            setIsMyEvent(( user.uid === activeEvent.user._id ) || ( user.uid === activeEvent.user.uid ));
         }
-    }, [ activeEvent ])
+    }, [ activeEvent ]);
     
 
     const onInputChange = ({ target }) => {
@@ -111,6 +114,7 @@ export const CalendarModal = () => {
             <div className="form-group mb-2">
                 <label>Fecha y hora inicio</label>
                 <DatePicker 
+                    disabled={ !isMyEvent }
                     selected={ formValues.start }
                     onChange={ (event) => onDateChanged( event, 'start' ) }
                     className="form-control"
@@ -124,6 +128,7 @@ export const CalendarModal = () => {
             <div className="form-group mb-2">
                 <label>Fecha y hora fin</label>
                 <DatePicker 
+                    disabled={ !isMyEvent }
                     minDate={ formValues.start }
                     selected={ formValues.end }
                     onChange={ (event) => onDateChanged( event, 'end' ) }
@@ -139,6 +144,7 @@ export const CalendarModal = () => {
             <div className="form-group mb-2">
                 <label>Titulo y notas</label>
                 <input 
+                    disabled={ !isMyEvent }
                     type="text" 
                     className={ `form-control ${ titleClass }` }
                     placeholder="Título del evento"
@@ -152,6 +158,7 @@ export const CalendarModal = () => {
 
             <div className="form-group mb-2">
                 <textarea 
+                    disabled={ !isMyEvent }
                     type="text" 
                     className="form-control"
                     placeholder="Notas"
@@ -164,8 +171,9 @@ export const CalendarModal = () => {
             </div>
 
             <button
+                disabled={ !isMyEvent }
                 type="submit"
-                className="btn btn-outline-primary btn-block"
+                className={`btn ${ !isMyEvent ? 'btn-outline-secondary' : 'btn-outline-primary' } btn-block `}
             >
                 <i className="far fa-save"></i>
                 <span> Guardar</span>
