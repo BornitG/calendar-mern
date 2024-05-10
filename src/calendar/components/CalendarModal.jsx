@@ -55,9 +55,13 @@ export const CalendarModal = () => {
     useEffect(() => {
         if ( activeEvent !== null){
             setFormValues({...activeEvent});
-            setIsMyEvent(( user.uid === activeEvent.user._id ) || ( user.uid === activeEvent.user.uid ));
+            if( activeEvent?.title !== ""){
+                setIsMyEvent(( user.uid === activeEvent?.user._id ) || ( user.uid === activeEvent?.user.uid ));
+                return;
+            }
+            setIsMyEvent(true);
         }
-    }, [ activeEvent ]);
+    }, [ activeEvent ]);  
     
 
     const onInputChange = ({ target }) => {
