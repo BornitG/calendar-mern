@@ -1,4 +1,5 @@
-import { useAuthStore } from "../../hooks/useAuthStore"
+import { useAuthStore } from '../../hooks/useAuthStore';
+import { Offline, Online } from 'react-detect-offline';
 
 
 export const NavBar = () => {
@@ -12,6 +13,13 @@ export const NavBar = () => {
             &nbsp;
             { user.name }
         </span>
+
+        <Online>
+            <span className='text-success'>Online</span>
+        </Online>
+        <Offline>
+            <span className='text-danger'>Offline - Requests will be saved until the connection is reestablished.</span>
+        </Offline>
 
         <button 
           className="btn btn-outline-danger"
